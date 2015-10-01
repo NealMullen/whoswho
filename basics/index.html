@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Who's Who</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- JS -->
+    <!-- load Angular, Firebase, Firebase Angular Library, and custom app.js -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+<div class="container" ng-app="WhosWho" >
+
+
+ <div class="panel2" ng-controller="AppController">
+<header>
+    <h2>Who's Who</h2>
+</header>
+ <ul>
+
+      <li ng-repeat="login in logins">
+        <input type="checkbox" id="{{ login.name }}" ng-model="login.available">
+      <label class="id" for="{{ login.name }}">{{ login.name }}<br>
+        <span class="status" ng-model="login.available" ng-if="login.available">Available</span>
+        <span class="status" ng-if="!login.available">{{ login.lastUser }}</span>
+      </label>
+      </li>
+
+    </ul>
+
+ </div>
+
+
+</div>  
+</body>
+</html>
