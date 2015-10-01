@@ -1,8 +1,132 @@
 // create our angular module and inject firebase
-angular.module('WhosWho', ['firebase'])
+var app = angular.module('WhosWho', ['firebase']);
 
+app.constant('config', {
+        clientUser: 'Unknown'
+    });
+
+// a factory to create a re-usable profile object
+// we pass in a username and get back their synchronized data
+app.factory("LoginData", ["$firebaseObject", 'config',
+  function($firebaseObject, config) {
+
+    var baseURL = "https://who-is-who.firebaseio.com/logins";
+    var ref = new Firebase(baseURL);
+    
+/*
+
+    var obj = $firebaseObject(ref);
+
+    obj.$watch(function(event) {
+      console.log("ehh");
+    });
+    */
+
+    var LoginData = {}
+
+    LoginData.getAll = function () {
+      return $firebaseObject(ref);  // return it as a synchronized object
+    };
+
+
+    LoginData.getLogin = function (name) {
+      var profileRef = ref.child(name);
+      return $firebaseObject(ref);  // return it as a synchronized object
+    };
+
+    LoginData.updateUser = function (name,user) {
+      var profileRef = ref.child(name).child("availability");
+      profileRef.update({
+        "lastUser": user
+      });
+      return $firebaseObject(ref);  // return it as a synchronized object
+    };
+
+     return LoginData;
+  }
+
+]);
+
+
+app.controller("mainController", ["$scope", "LoginData", 'config',
+  function($scope, LoginData, config) {
+
+    (function init() {
+            getAll();
+      if(localStorage.getItem('user')){
+        config.clientUser = localStorage.getItem('user');
+
+        console.log(config.clientUser);
+      }
+      else{
+        localStorage.setItem('user', config.clientUser);
+      }
+        })();
+/*
+
+     $scope.init = function(){
+      getAll();
+      if(localStorage.getItem('user')){
+        $scope.user = localStorage.getItem('user');
+        console.log($scope.user);
+      }
+      else{
+        localStorage.setItem('user', 'Unkown');
+        $scope.user = localStorage.getItem('user');
+      }
+    }
+    */
+
+    function getAll(){
+      LoginData.getAll().$bindTo($scope, "logins"); // create a three-way binding to our Logins as $scope.logins;
+    }
+
+
+     $scope.updateUser = function(name){
+      LoginData.updateUser(name,  config.clientUser);
+    }
+    /*
+    $scope.userSubmit = function(){
+    localStorage.setItem('user', $scope.user);
+      console.log($scope.user);
+  }
+  */
+  }
+]);
+app.controller("subController", ["$scope", 'config',
+  function($scope, config) {
+
+    (function init() {
+      if(localStorage.getItem('user')){
+        config.clientUser = localStorage.getItem('user');
+
+        console.log(config.clientUser);
+      }
+      else{
+        localStorage.setItem('user', config.clientUser);
+      }
+      $scope.user = config.clientUser;
+        })();
+
+ /*   $scope.userSubmit = function(){
+      $scope.user = this.text;
+      console.log(this.text);
+    localStorage.setItem('user', $scope.user);
+  }*/
+
+  $scope.userSubmit = function() {
+    if(this.user){
+           config.clientUser = this.user;
+          console.log( config.clientUser);
+          localStorage.setItem('user',  config.clientUser);
+        }
+      };
+
+  }
+]);
+/*
 // create our main controller and get access to firebase
-.controller('mainController', function($scope, $firebase) {
+app.controller('mainController2', function($scope, $firebase) {
   // our application code will go here
     // connect to firebase 
   var ref = new Firebase("https://who-is-who.firebaseio.com/logins");  
@@ -58,4 +182,4 @@ var onComplete = function(error) {
     console.log('Synchronization succeeded');
   }
 };
-});
+});*/

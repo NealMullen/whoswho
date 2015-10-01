@@ -8,41 +8,39 @@
 
     <!-- JS -->
     <!-- load Angular, Firebase, Firebase Angular Library, and custom app.js -->
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
 <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
 <script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
     <script src="app.js"></script>
 </head>
 <body>
-<div class="container"  ng-app="WhosWho" >
+<div class="container" data-ng-init="init()" ng-app="WhosWho" ng-controller="mainController">
 
 
  <div class="panel">
 <header>
     <h2>Who's Who</h2>
 </header>
-<div ng-controller="subController">
  <form id="username" ng-submit="userSubmit()">
     <input type="text" ng-model="user" placeholder="Who the feck are you?"/>
     <input type="submit" id="submit" value="OK" />
  </form>
- </div>
-<div ng-controller="mainController">
+
     <form ng-submit="saveProfile()">        
     <div ng-repeat="login in logins" class="time-slot item" ng-class="{ 'active': login.availability.available }">     
 
-      <input type="checkbox" id="{{ login.name }}" ng-model="login.availability.available" ng-change="updateUser(login.name)">
+      <input type="checkbox" id="{{ login.name }}" ng-model="login.availability.available"  ng-change="usedBy=login.availability.available">
       <!--ng-disabled="!login.available-->
 
       <label class="id" for="{{ login.name }}">{{ login.name }}<br>
         <span class="status" ng-if="login.availability.available">Available</span>
-        <span class="status" ng-if="!login.availability.available">{{ login.availability.lastUser }}</span>
+        <span class="status" ng-if="!login.availability.available">{{ login.availability.usedBy }}</span>
       </label>
 
     </div>
   </form>
    
- </div>
+
  </div>
 
 
