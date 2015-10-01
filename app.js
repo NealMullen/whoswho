@@ -35,7 +35,7 @@ app.factory("LoginData", ["$firebaseObject", 'config',
     };
 
     LoginData.updateUser = function (name,user) {
-      var profileRef = ref.child(name).child("availability");
+      var profileRef = ref.child(name);
       profileRef.update({
         "lastUser": user
       });
@@ -51,6 +51,7 @@ app.factory("LoginData", ["$firebaseObject", 'config',
 app.controller("mainController", ["$scope", "LoginData", 'config',
   function($scope, LoginData, config) {
 
+
     (function init() {
             getAll();
       if(localStorage.getItem('user')){
@@ -61,6 +62,8 @@ app.controller("mainController", ["$scope", "LoginData", 'config',
       else{
         localStorage.setItem('user', config.clientUser);
       }
+
+
         })();
 $scope.logins;
 /*

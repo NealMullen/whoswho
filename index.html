@@ -29,14 +29,14 @@
  </div>
 <div ng-controller="mainController">
     <form ng-submit="saveProfile()">        
-    <div ng-repeat="login in logins" class="time-slot item" ng-class="{ 'active': login.availability.available }">     
+    <div ng-repeat="login in logins" class="time-slot item" ng-class="{ 'active': login.available }">     
 
-      <input type="checkbox" id="{{ login.name }}" ng-model="login.availability.available" ng-change="updateUser(login.name)">
+      <input type="checkbox" id="{{ login.name }}" ng-model="login.available" ng-change="updateUser(login.name)">
       <!--ng-disabled="!login.available-->
 
       <label class="id" for="{{ login.name }}">{{ login.name }}<br>
-        <span class="status" ng-if="login.availability.available">Available</span>
-        <span class="status" ng-if="!login.availability.available">{{ login.availability.lastUser }}</span>
+        <span class="status" ng-model="namename" ng-if="login.available">Available</span>
+        <span class="status" ng-if="!login.available">{{ login.lastUser }}</span>
       </label>
 
     </div>
