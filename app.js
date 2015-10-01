@@ -62,6 +62,7 @@ app.controller("mainController", ["$scope", "LoginData", 'config',
         localStorage.setItem('user', config.clientUser);
       }
         })();
+$scope.logins;
 /*
 
      $scope.init = function(){
