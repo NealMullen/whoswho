@@ -7,9 +7,30 @@ var app = angular.module('WhosWho', ['firebase']);
 // this factory returns a synchronized array of chat messages
 app.factory("LoginData", ["$firebaseObject",
   function($firebaseObject) {
- return function() {
+var counter;
     var baseURL = "https://who-is-who.firebaseio.com/logins/brc"
     var ref = new Firebase(baseURL);
+    var LoginData = {}
+
+    LoginData.getAll = function () {
+      return $firebaseObject(ref);  // return it as a synchronized object
+    };
+
+    LoginData.updateData = function (name) {
+       counter = counter + 1;
+        ref.child(name).on('child_changed', function(childSnapshot, prevChildKey) {
+        var data = childSnapshot.exportVal();
+        if(data==true){
+          console.log(data);
+        }
+        else{
+          console.log("FUCK" + counter);
+        }
+    });
+
+      return $firebaseObject(ref);  // return it as a synchronized object
+    };
+
 
     ref.child("realdev1").once("value", function(snapshot) {
       var data = snapshot.val();
@@ -18,25 +39,54 @@ app.factory("LoginData", ["$firebaseObject",
       console.log(data.lastUser);  // 53
     });
 
+    ref.once("value", function(snapshot) {
+       // The callback function will get called twice, once for "fred" and once for "barney"
+  snapshot.forEach(function(childSnapshot) {
+    // key will be "fred" the first time and "barney" the second time
+    var key = childSnapshot.key();
+    // childData will be the actual contents of the child
+    var childData = childSnapshot.val();
+
+    console.log(key + " " + childData);
+  });
+});
+
+
     ref.on('child_changed', function(childSnapshot, prevChildKey) {
-  console.log("AHH");
+     // var data = childSnapshot.exportVal();
+     // if(data==true){
+      //    console.log(data);
+     // }
+     // else{
+       // console.log("FUCK");
+     // }
+      
 });
 
     // this uses AngularFire to create the synchronized array
-    return $firebaseObject(ref);
-  }}
+    //return $firebaseObject(ref);
+  return LoginData;
+}
 ]);
 
 
 app.controller("AppController", ["$scope", "LoginData",
   // we pass our new LoginData factory into the controller
   function($scope, LoginData) {
+
+     (function init() {
+            getAll();
+        })();
+
+
  $scope.logins;
     // we add LoginData array to the scope to be used in our ng-repeat
-     $scope.logins= LoginData().$bindTo($scope, "logins");
-   
+     //$scope.logins= LoginData().$bindTo($scope, "logins");
+  //  $scope.updateVal=function(name){
+   //   console.log(name);
+   // }
 
-    $scope.$watch($scope.logins, function() { console.log("change")}, true);
+   // $scope.$watch($scope.logins, function() { console.log("change")}, true);
 
 /*    $scope.$watch(function() {
   return $scope.logins;
@@ -44,5 +94,13 @@ app.controller("AppController", ["$scope", "LoginData",
   console.log("change detected: " + newValue)
 });
 */
+  function getAll(){
+       $scope.logins= LoginData.getAll().$bindTo($scope, "logins"); // create a three-way binding to our Logins as $scope.logins;
+    }
+
+    $scope.updateVal=function(name){
+      console.log("FUCK");
+      //LoginData.updateData(name);
+    }
   }
 ]);

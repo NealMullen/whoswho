@@ -24,9 +24,9 @@
  <ul>
 
       <li ng-repeat="login in logins">
-        <input type="checkbox" id="{{ login.name }}" ng-model="login.available">
+        <input type="checkbox" id="{{ login.name }}" ng-model="login.available" ng-change="updateVal(login.name)">
       <label class="id" for="{{ login.name }}">{{ login.name }}<br>
-        <span class="status" ng-model="login.available" ng-if="login.available">Available</span>
+        <span class="status" ng-if="login.available">Available</span>
         <span class="status" ng-if="!login.available">{{ login.lastUser }}</span>
       </label>
       </li>
