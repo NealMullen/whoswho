@@ -7,7 +7,6 @@ var app = angular.module('WhosWho', ['firebase']);
 // this factory returns a synchronized array of chat messages
 app.factory("LoginData", ["$firebaseObject",
   function($firebaseObject) {
-var counter;
     var baseURL = "https://who-is-who.firebaseio.com/logins/brc"
     var ref = new Firebase(baseURL);
     var LoginData = {}
@@ -17,18 +16,37 @@ var counter;
     };
 
     LoginData.updateData = function (name) {
-       counter = counter + 1;
+
+      ref.child(name).once("value", function(snapshot) {
+        var lastNameSnapshot = snapshot.child("available");
+        var lastName = lastNameSnapshot.val();
+        console.log(lastName);
+
+        
+
+      });
+
+      var ref2 = new Firebase("https://who-is-who.firebaseio.com/logins/brc/available");
+
+        ref2.on('value', function(childSnapshot, prevChildKey){
+          console.log("CHANGED" + Math.random());
+        });
+
+       /*
         ref.child(name).on('child_changed', function(childSnapshot, prevChildKey) {
-        var data = childSnapshot.exportVal();
+        var data = childSnapshot.child("available").exportVal();
         if(data==true){
           console.log(data);
         }
         else{
-          console.log("FUCK" + counter);
+          console.log("FUCK");
         }
     });
 
       return $firebaseObject(ref);  // return it as a synchronized object
+      */
+
+
     };
 
 
@@ -99,8 +117,8 @@ app.controller("AppController", ["$scope", "LoginData",
     }
 
     $scope.updateVal=function(name){
-      console.log("FUCK");
-      //LoginData.updateData(name);
+      //console.log("FUCK");
+      LoginData.updateData(name);
     }
   }
 ]);
