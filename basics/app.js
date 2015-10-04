@@ -1,12 +1,14 @@
 // create our angular module and inject firebase
 var app = angular.module('WhosWho', ['firebase']);
-
+app.constant('config', {
+        clientUser: 'Unknown'
+    });
 
 
 
 // this factory returns a synchronized array of chat messages
-app.factory("LoginData", ["$firebaseObject",
-  function($firebaseObject) {
+app.factory("LoginData", ["$firebaseObject", "config", 
+  function($firebaseObject, config) {
     var baseURL = "https://who-is-who.firebaseio.com/logins/brc"
     var ref = new Firebase(baseURL);
     var LoginData = {}
@@ -16,21 +18,35 @@ app.factory("LoginData", ["$firebaseObject",
     };
 
     LoginData.updateData = function (name) {
-
-      ref.child(name).once("value", function(snapshot) {
-        var lastNameSnapshot = snapshot.child("available");
-        var lastName = lastNameSnapshot.val();
+      var lastname;
+      ref.child(name).child("available").once("value", function(snapshot) {
+        //var lastNameSnapshot = snapshot.child("available");
+        lastName = snapshot.val();
         console.log(lastName);
-
-        
-
+        console.log("CHANGED AVALIABILITY" + Math.random());
+        var profileRef = ref.child(name);
+        if(lastName == false){
+          console.log("It's avaliable");
+          
+            profileRef.update({
+              "available": false,
+              "lastUser": "NM"
+            });
+        }
+        else{
+          profileRef.update({
+            "available": true,
+              "lastUser": "Unkown"
+            });
+        }
       });
+      console.log(lastName);
 
-      var ref2 = new Firebase("https://who-is-who.firebaseio.com/logins/brc/available");
+     // var ref2 = new Firebase("https://who-is-who.firebaseio.com/logins/brc/available");
 
-        ref2.on('value', function(childSnapshot, prevChildKey){
-          console.log("CHANGED" + Math.random());
-        });
+     //   ref2.on('value', function(childSnapshot, prevChildKey){
+      //   console.log("CHANGED" + Math.random());
+     //   });
 
        /*
         ref.child(name).on('child_changed', function(childSnapshot, prevChildKey) {
@@ -50,36 +66,51 @@ app.factory("LoginData", ["$firebaseObject",
     };
 
 
-    ref.child("realdev1").once("value", function(snapshot) {
-      var data = snapshot.val();
-      // data equals { "name": { "first": "Fred", "last": "Flintstone" }, "age": 53 }
-      console.log(data.available);  // "Fred"
-      console.log(data.lastUser);  // 53
-    });
+    LoginData.updateData2 = function (name, userName) {
+      console.log(name);
 
-    ref.once("value", function(snapshot) {
-       // The callback function will get called twice, once for "fred" and once for "barney"
-  snapshot.forEach(function(childSnapshot) {
-    // key will be "fred" the first time and "barney" the second time
-    var key = childSnapshot.key();
-    // childData will be the actual contents of the child
-    var childData = childSnapshot.val();
-
-    console.log(key + " " + childData);
-  });
-});
+      ref.child(name).child("availability").once("value", function(data) {
+        //var lastNameSnapshot = snapshot.child("available");
+        //lastName = data.val();
+        available = data.child("available").val();
+        lastUser = data.child("lastUser").val();
 
 
-    ref.on('child_changed', function(childSnapshot, prevChildKey) {
-     // var data = childSnapshot.exportVal();
-     // if(data==true){
-      //    console.log(data);
-     // }
-     // else{
-       // console.log("FUCK");
-     // }
+console.log(lastUser + " " + userName);
+        if(lastUser == userName){
+          console.log("Same user");
+        }
+        else{
+          console.log("New user");
+        }
+
+        switch (available) {
+    case true:
+ var profileRef = ref.child(name).child("availability");
+ profileRef.update({
+            "available": false,
+              "lastUser": userName
+            });
+
+    console.log("this is now false");
+        console.log("CHANGED AVALIABILITY" + Math.random());
+        break;
+        case false:
+ var profileRef = ref.child(name).child("availability");
+ profileRef.update({
+            "available": true
+            });
+
+        console.log("this is now true");
+        console.log("CHANGED AVALIABILITY" + Math.random());
+        break;
+      }
+
+
+        
+      });
+    };
       
-});
 
     // this uses AngularFire to create the synchronized array
     //return $firebaseObject(ref);
@@ -88,13 +119,23 @@ app.factory("LoginData", ["$firebaseObject",
 ]);
 
 
-app.controller("AppController", ["$scope", "LoginData",
+app.controller("AppController", ["$scope", "LoginData", "config", 
   // we pass our new LoginData factory into the controller
-  function($scope, LoginData) {
+  function($scope, LoginData, config) {
 
      (function init() {
             getAll();
+            if(localStorage.getItem('user')){
+        config.clientUser = localStorage.getItem('user');
+
+        console.log(config.clientUser);
+      }
+      else{
+        localStorage.setItem('user', config.clientUser);
+      }
+      $scope.user = config.clientUser;
         })();
+
 
 
  $scope.logins;
@@ -112,6 +153,14 @@ app.controller("AppController", ["$scope", "LoginData",
   console.log("change detected: " + newValue)
 });
 */
+  $scope.userSubmit = function() {
+    if(this.user){
+           config.clientUser = this.user;
+          console.log( config.clientUser);
+          localStorage.setItem('user',  config.clientUser);
+        }
+      };
+
   function getAll(){
        $scope.logins= LoginData.getAll().$bindTo($scope, "logins"); // create a three-way binding to our Logins as $scope.logins;
     }
@@ -119,6 +168,11 @@ app.controller("AppController", ["$scope", "LoginData",
     $scope.updateVal=function(name){
       //console.log("FUCK");
       LoginData.updateData(name);
+    }
+
+    $scope.updateVal2=function(name){
+      //console.log("FUCK");
+      LoginData.updateData2(name, config.clientUser);
     }
   }
 ]);

@@ -21,8 +21,19 @@
 <header>
     <h2>Who's Who</h2>
 </header>
+ <form id="username" ng-submit="userSubmit()">
+    <input type="text" ng-model="user" placeholder="Who the feck are you?"/>
+    <input type="submit" id="submit" value="OK" />
+ </form>
  <ul>
 
+ <li ng-repeat="login in logins" ng-click="updateVal2(login.name)">
+      <span class="id">{{ login.name }}</span>
+        <span class="status" ng-if="login.availability.available">Available</span>
+        <span class="status" ng-if="!login.availability.available">{{ login.availability.lastUser }}</span>
+      </li>
+
+      <!--
       <li ng-repeat="login in logins">
         <input type="checkbox" id="{{ login.name }}" ng-model="login.available" ng-change="updateVal(login.name)">
       <label class="id" for="{{ login.name }}">{{ login.name }}<br>
@@ -30,6 +41,7 @@
         <span class="status" ng-if="!login.available">{{ login.lastUser }}</span>
       </label>
       </li>
+      -->
 
     </ul>
 
