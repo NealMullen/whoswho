@@ -17,9 +17,9 @@
 
  <div class="panel" ng-controller="AppController">
 <header ng-click="showBody = !showBody">
-    <h2>Who's Who</h2>
+<h2>Who's Who <span class="close" ng-show="showBody">x</span><span class="close" ng-show="!showBody">^</span></h2>
 </header>
-<div ng-show="showBody">
+<div class="content" ng-show="showBody">
  <form id="username" ng-submit="userSubmit()">
     <input type="text" ng-model="user" placeholder="Who the feck are you?" ng-blur="userSubmit()"/>
     <input type="submit" id="submit" value="OK" />

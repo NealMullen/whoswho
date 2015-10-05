@@ -3,6 +3,13 @@ a,hr{padding:0}article,aside,details,figcaption,figure,footer,header,hgroup,hr,m
 * {
     box-sizing: border-box;
 }
+ html, body { 
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: auto;
+        }
+
 body {
     position: relative;
     width: 100%;
@@ -11,17 +18,26 @@ body {
     font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
 }
 .panel {
-    width: 260px;
-    height: 320px;
-    background: #464646;
+  width: 260px;
     position: absolute;
-    right: 0;
+    right: 15px;background: #464646;
+    bottom: 15px;
+}
+.panel .content{
+  
+    height: 320px;
+    padding-top:10px;
+    
+    overflow:hidden;
 }
 header {
     background: #707070;
     padding: 10px;
     color: #fff;
-    margin-bottom: 10px;
+    cursor: pointer;
+}
+.close{
+  float:right;
 }
 #username {
     position: absolute;
