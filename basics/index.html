@@ -13,14 +13,14 @@
 <script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
     <script src="app.js"></script>
 </head>
-<body ng-app="WhosWho" >
-
+<body>
+<div ng-app="WhosWho" >
  <div class="panel" ng-controller="AppController">
 <header ng-click="showBody = !showBody">
 <h2>Who's Who <span class="close" ng-show="showBody">x</span><span class="close" ng-show="!showBody">^</span></h2>
 </header>
 <div class="content" ng-show="showBody">
- <form id="username" ng-submit="userSubmit()">
+ <form id="whoswhousername" ng-submit="userSubmit()">
     <input type="text" ng-model="user" placeholder="Who the feck are you?" ng-blur="userSubmit()"/>
     <input type="submit" id="submit" value="OK" />
  </form>
@@ -37,7 +37,7 @@
 
     </div>
  </div>
-
+</div>
 
 
 </body>
