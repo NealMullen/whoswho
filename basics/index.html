@@ -16,9 +16,10 @@
 <body ng-app="WhosWho" >
 
  <div class="panel" ng-controller="AppController">
-<header>
+<header ng-click="showBody = !showBody">
     <h2>Who's Who</h2>
 </header>
+<div ng-show="showBody">
  <form id="username" ng-submit="userSubmit()">
     <input type="text" ng-model="user" placeholder="Who the feck are you?" ng-blur="userSubmit()"/>
     <input type="submit" id="submit" value="OK" />
@@ -34,6 +35,7 @@
 
     </ul>
 
+    </div>
  </div>
 
 
