@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Who's Who</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- JS -->
+    <!-- load Angular, Firebase, Firebase Angular Library, and custom app.js -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+<!--<iframe src="https://who-is-who.firebaseapp.com"  width="280" height="410" style="border:none; position: absolute; right:0; bottom:0; "></iframe>-->
+
+<div ng-app="WhosWho" >
+ <div class="panel" ng-controller="AppController">
+<header ng-click="showBody = !showBody">
+<h2>Who's Who <span class="close" ng-show="!showBody">x</span><span class="close" ng-show="showBody">^</span></h2>
+</header>
+<div class="content" ng-show="!showBody">
+ <form id="whoswhousername" ng-submit="userSubmit()">
+    <input type="text" ng-model="YourName" placeholder="Who are you?" ng-blur="userSubmit()"/>
+    <input type="submit" id="submit" value="OK" />
+ </form>
+
+<details ng-repeat="datadata in datadatadata">
+    <summary class="toggleHeading">{{datadata.title}}</summary>
+     <ul class="loginList">
+
+     <li ng-repeat="data in datadata.logs" ng-click="updateData(data.name, datadata.title)" ng-class="{ 'active': data.availability.available}">
+      <span class="id">{{ data.name}}</span>
+        <span class="status" ng-if="data.availability.available">Available</span>
+        <span class="status" ng-if="!data.availability.available">{{ data.availability.lastUser }}</span>
+      </li>
+
+
+    </ul>
+</details>
+
+
+
+    </div>
+ </div>
+</div>
+
+
+
+</body>
+</html>

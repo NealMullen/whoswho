@@ -2,24 +2,24 @@
 var app = angular.module('WhosWho', ['firebase']);
 
 app.constant('config', {
-    clientUser: 'Unknown'
+    clientUser: 'User'
 });
 
 // this factory returns a synchronized array of chat messages
-app.factory("LoginData", ["$firebaseObject", "config",
+app.factory("JustData", ["$firebaseObject", "config",
     function($firebaseObject, config) {
-        var baseURL = "https://who-is-who.firebaseio.com/logins/brc"
+        var baseURL = "https://who-is-who.firebaseio.com"
         var ref = new Firebase(baseURL);
-        var LoginData = {}
+        var JustData = {}
 
-        LoginData.getAll = function() {
+        JustData.getAll = function() {
             return $firebaseObject(ref); // return it as a synchronized object
         };
 
-        LoginData.updateData = function(name) {
+        JustData.updateData = function(name,title) {
             var available,
                 lastUser,
-                profileRef = ref.child(name).child("availability"), // Get the Avaliability object from Firebase
+                profileRef = ref.child(title+'/logs/'+name+'/availability'), // Get the Avaliability object from Firebase
                 availableUpdate = false;
 
             profileRef.once("value", function(data) { // Get the data values of the login account clicked
@@ -39,35 +39,34 @@ app.factory("LoginData", ["$firebaseObject", "config",
 
         // this uses AngularFire to create the synchronized array
         //return $firebaseObject(ref);
-        return LoginData;
+        return JustData;
     }
 ]);
 
-app.controller("AppController", ["$scope", "LoginData", "config",
-    // we pass our new LoginData factory into the controller
-    function($scope, LoginData, config) {
+app.controller("AppController", ["$scope", "JustData", "config",
+    // we pass our new JustData factory into the controller
+    function($scope, JustData, config) {
 
         (function init() {
-            (localStorage.getItem('user')) ? config.clientUser = localStorage.getItem('user'): localStorage.setItem('user', config.clientUser);
-            $scope.user = config.clientUser;
-            $scope.logins;
+            (localStorage.getItem('YourName')) ? config.clientUser = localStorage.getItem('YourName'): localStorage.setItem('YourName', config.clientUser);
+            $scope.YourName = config.clientUser;
+            $scope.datadatadata;
             getAll();
         })();
 
         function getAll() {
-            $scope.logins = LoginData.getAll().$bindTo($scope, "logins"); // create a three-way binding to our Logins as $scope.logins;
+            $scope.datadatadata = JustData.getAll().$bindTo($scope, "datadatadata"); // create a three-way binding to our datadatadata as $scope.datadatadata;
         }
 
-        $scope.updateData = function(name) {
-            LoginData.updateData(name);
+        $scope.updateData = function(name,title) {
+            JustData.updateData(name,title);
         }
 
         $scope.userSubmit = function() {
-            if (this.user && this.user != config.clientUser) {
-                config.clientUser = this.user;
-                localStorage.setItem('user', config.clientUser);
+            if (this.YourName && this.YourName != config.clientUser) {
+                config.clientUser = this.YourName;
+                localStorage.setItem('YourName', config.clientUser);
             }
         };
     }
 ]);
-
